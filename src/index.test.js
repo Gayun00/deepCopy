@@ -1,4 +1,4 @@
-const { copyObj, copyMap } = require('.');
+const { copyObj, copyMap, copySet } = require('.');
 
 describe('test copy object', () => {
 	const obj = {
@@ -44,3 +44,23 @@ describe('test copy map object', () => {
 		expect(copyMap(mapObj)).toEqual(mapObj);
 	});
 });
+
+describe('test copy set object', () => {
+	const setObj = new Set();
+	setObj.add(1);
+	setObj.add(5);
+
+	test('copy primitive property in set object', () => {
+		expect(copySet(setObj)).not.toBe(setObj);
+		expect(copySet(setObj)).toEqual(setObj);
+	});
+
+	test('copy primitive property in set object', () => {
+		setObj.add({ a: 1, b: 2 });
+
+		expect(copySet(setObj)).not.toBe(setObj);
+		expect(copySet(setObj)).toEqual(setObj);
+	});
+});
+
+// TODO: test object value reference

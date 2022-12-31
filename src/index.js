@@ -26,3 +26,18 @@ export const copyMap = (origin) => {
 		return res;
 	}
 };
+
+export const copySet = (origin) => {
+	if (origin instanceof Set) {
+		const res = new Set();
+		for (let [key, value] of origin.entries()) {
+			if (typeof value === 'object') {
+				const objValue = copyObj(value);
+				res.add(key, objValue);
+			} else {
+				res.add(key, value);
+			}
+		}
+		return res;
+	}
+};
