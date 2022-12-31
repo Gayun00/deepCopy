@@ -1,4 +1,4 @@
-const { copyObj, copyMap, copySet } = require('.');
+const { copyObj, copyMap, copySet, deepCopy } = require('.');
 
 describe('test copy object', () => {
 	const obj = {
@@ -63,4 +63,30 @@ describe('test copy set object', () => {
 	});
 });
 
+describe('test deepCopy()', () => {
+	test('deep copy object depends on object type', () => {
+		const setObj = new Set();
+		setObj.add(1);
+		setObj.add(5);
+		setObj.add({ a: 1, b: 2 });
+
+		const mapObj = new Map([
+			['A', { value: 'valueA' }],
+			['B', { value: 'valueB' }],
+			['C', { value: 'valueC' }],
+			['D', 'valueD'],
+		]);
+
+		const obj = {
+			a: 1,
+			b: {
+				c: 2,
+			},
+		};
+
+		expect(deepCopy(setObj)).toEqual(setObj);
+		expect(deepCopy(mapObj)).toEqual(mapObj);
+		expect(deepCopy(obj)).toEqual(obj);
+	});
+});
 // TODO: test object value reference
