@@ -1,3 +1,15 @@
+export const deepCopy = (obj) => {
+	if (typeof obj !== 'object') throw new Error('unsupported type');
+
+	if (obj instanceof Map) {
+		return copyMap(obj);
+	} else if (obj instanceof Set) {
+		return copySet(obj);
+	} else {
+		return copyObj(obj);
+	}
+};
+
 export const copyObj = (origin) => {
 	let res = {};
 
@@ -16,11 +28,11 @@ export const copyMap = (origin) => {
 	if (origin instanceof Map) {
 		const res = new Map();
 		for (let [key, value] of origin) {
-			if (typeof origin.get(key) === 'object') {
+			if (typeof value === 'object') {
 				const objValue = copyObj(value);
 				res.set(key, objValue);
 			} else {
-				res.set(key, origin.get(key));
+				res.set(key, value);
 			}
 		}
 		return res;
