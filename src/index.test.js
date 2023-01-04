@@ -1,4 +1,5 @@
-const { copyObj, copyMap, copySet, deepCopy } = require('.');
+const { copyObj, copyMap, copySet, deepCopy, copy } = require('.');
+const { TYPE, key } = require('./utils/constants');
 
 describe('test copying object', () => {
 	test('copy primitive value in object', () => {
@@ -94,5 +95,35 @@ describe('test deepCopy()', () => {
 
 	test('throw an error if the parameter type is array', () => {
 		expect(() => deepCopy([1, 2, 3])).toThrow('unsupported type');
+	});
+});
+
+describe('test obj', () => {
+	const obj = {
+		A: 'valueA',
+	};
+
+	const mapObject = new Map([
+		['A', { value: 'valueA' }],
+		['B', { value: 'valueB' }],
+		['C', { value: 'valueC' }],
+		['D', 'valueD'],
+	]);
+
+	const setObj = new Set();
+	setObj.add(1);
+	setObj.add(5);
+	setObj.add({ a: 1, b: 2 });
+
+	test('get object property with Object.prototype', () => {
+		const typeOfMap = Object.prototype.toString.call(mapObject);
+		expect(typeOfMap).toBe(key(TYPE.MAP));
+		expect(copy[typeOfMap](mapObject)).toEqual(mapObject);
+
+		const typeOfObject = Object.prototype.toString.call(obj);
+		expect(typeOfObject).toBe(key(TYPE.OBJECT));
+		expect(copy[typeOfObject](obj)).toEqual(obj);
+
+		// TODO: add test case of other type
 	});
 });

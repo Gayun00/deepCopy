@@ -1,14 +1,23 @@
+import { key, TYPE } from './utils/constants';
+
 export const deepCopy = (obj) => {
 	if (!(obj instanceof Object) || obj instanceof Array)
 		throw new Error('unsupported type');
 
-	if (obj instanceof Map) {
+	const objType = Object.prototype.toString.call(obj);
+	return copy[objType](obj);
+};
+
+export const copy = {
+	[key(TYPE.MAP)](obj) {
 		return copyMap(obj);
-	} else if (obj instanceof Set) {
+	},
+	[key(TYPE.SET)](obj) {
 		return copySet(obj);
-	} else {
+	},
+	[key(TYPE.OBJECT)](obj) {
 		return copyObj(obj);
-	}
+	},
 };
 
 export const copyObj = (origin) => {
