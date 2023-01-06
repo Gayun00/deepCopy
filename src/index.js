@@ -1,10 +1,12 @@
 import { key, TYPE } from './utils/constants';
 
 export const deepCopy = (obj) => {
-	if (!(obj instanceof Object) || obj instanceof Array)
-		throw new Error('unsupported type');
-
-	const objType = Object.prototype.toString.call(obj);
+	let objType = '';
+	if (typeof obj === 'object') {
+		objType = Object.prototype.toString.call(obj);
+	} else {
+		objType = TYPE.PRIMITIVE;
+	}
 	return copy[objType](obj);
 };
 
@@ -18,17 +20,21 @@ export const copy = {
 	[key(TYPE.OBJECT)](obj) {
 		return copyObj(obj);
 	},
+	[TYPE.PRIMITIVE](obj) {
+		return copyPrimitive(obj);
+	},
+};
+
+export const copyPrimitive = (value) => {
+	const res = value;
+	return res;
 };
 
 export const copyObj = (origin) => {
 	let res = {};
 
 	for (let key in origin) {
-		if (typeof origin[key] === 'object') {
-			res[key] = copyObj(origin[key]);
-		} else {
-			res[key] = origin[key];
-		}
+		res[key] = deepCopy(origin[key]);
 	}
 
 	return res;
@@ -36,26 +42,20 @@ export const copyObj = (origin) => {
 
 export const copyMap = (origin) => {
 	const res = new Map();
+
 	for (let [key, value] of origin) {
-		if (typeof value === 'object') {
-			const objValue = copyObj(value);
-			res.set(key, objValue);
-		} else {
-			res.set(key, value);
-		}
+		res.set(key, deepCopy(value));
 	}
+
 	return res;
 };
 
 export const copySet = (origin) => {
 	const res = new Set();
+
 	for (let [key, value] of origin.entries()) {
-		if (typeof value === 'object') {
-			const objValue = copyObj(value);
-			res.add(key, objValue);
-		} else {
-			res.add(key, value);
-		}
+		res.add(deepCopy(value));
 	}
+
 	return res;
 };

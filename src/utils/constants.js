@@ -3,6 +3,7 @@ export const TYPE = {
 	SET: 'Set',
 	OBJECT: 'Object',
 	ARRAY: 'Array',
+	PRIMITIVE: 'Primitive',
 };
 
 export const handleType = (obj) => {

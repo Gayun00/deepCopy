@@ -88,13 +88,9 @@ describe('test deepCopy()', () => {
 		expect(deepCopy(mapObj)).toEqual(mapObj);
 	});
 
-	test('throw an error if the parameter is primitive', () => {
-		expect(() => deepCopy(4)).toThrow('unsupported type');
-		expect(() => deepCopy('string')).toThrow('unsupported type');
-	});
-
-	test('throw an error if the parameter type is array', () => {
-		expect(() => deepCopy([1, 2, 3])).toThrow('unsupported type');
+	test('copy primitive type value', () => {
+		expect(deepCopy(4)).toBe(4);
+		expect(deepCopy('string')).toBe('string');
 	});
 });
 
@@ -125,5 +121,17 @@ describe('test obj', () => {
 		expect(copy[typeOfObject](obj)).toEqual(obj);
 
 		// TODO: add test case of other type
+	});
+
+	test('test recursive call deepCopy', () => {
+		const obj = {
+			a: 1,
+			b: {
+				c: 3,
+				d: 6,
+			},
+		};
+
+		expect(deepCopy(obj)).toEqual(obj);
 	});
 });
