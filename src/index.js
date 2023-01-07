@@ -41,32 +41,36 @@ export const copyPrimitive = (value) => {
 
 export const copyArray = (array) => {
 	const res = [];
-	for (let key in array) {
-		res[key] = deepCopy(array[key]);
-	}
+	iterateObj2(array, (key, value) => (res[key] = value));
 	return res;
 };
 
 export const copyObj = (origin) => {
 	let res = {};
-	for (let key in origin) {
-		res[key] = deepCopy(origin[key]);
-	}
+	iterateObj2(origin, (key, value) => (res[key] = value));
 	return res;
 };
 
 export const copyMap = (origin) => {
 	const res = new Map();
-	for (let [key, value] of origin) {
-		res.set(key, deepCopy(value));
-	}
+	iterateObj(origin, (key, value) => res.set(key, value));
 	return res;
 };
 
 export const copySet = (origin) => {
 	const res = new Set();
-	for (let value of origin.values()) {
-		res.add(deepCopy(value));
-	}
+	iterateObj(origin.entries(), (value) => res.add(value));
 	return res;
+};
+
+const iterateObj = (obj, setValueFunc) => {
+	for (let [key, value] of obj) {
+		setValueFunc(key, deepCopy(value));
+	}
+};
+
+const iterateObj2 = (obj, setValueFunc) => {
+	for (let key in obj) {
+		setValueFunc(key, deepCopy(obj[key]));
+	}
 };
