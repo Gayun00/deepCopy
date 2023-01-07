@@ -4,6 +4,8 @@ export const TYPE = {
 	OBJECT: 'Object',
 	ARRAY: 'Array',
 	PRIMITIVE: 'Primitive',
+	NULL: 'Null',
+	UNDEFINED: 'Undefined',
 };
 
 export const handleType = (obj) => {

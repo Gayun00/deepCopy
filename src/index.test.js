@@ -42,6 +42,17 @@ describe('test copying map object', () => {
 		expect(copyMap(mapObj)).not.toBe(mapObj);
 		expect(copyMap(mapObj)).toEqual(mapObj);
 	});
+
+	test('copy map object value in map object', () => {
+		const map = new Map();
+		map.set('a', 1);
+		const map2 = new Map();
+		map2.set('b', 2);
+		map.set('c', map2);
+
+		expect(deepCopy(map)).toEqual(map);
+		expect(deepCopy(map)).not.toBe(map);
+	});
 });
 
 describe('test copying set object', () => {
@@ -59,6 +70,14 @@ describe('test copying set object', () => {
 
 		expect(copySet(setObj)).not.toBe(setObj);
 		expect(copySet(setObj)).toEqual(setObj);
+	});
+
+	test('copy set value in set object', () => {
+		const set2 = new Set();
+		set2.add(5);
+		setObj.add(set2);
+		expect(deepCopy(set2)).toEqual(set2);
+		expect(deepCopy(set2)).not.toBe(set2);
 	});
 });
 
@@ -123,15 +142,21 @@ describe('test obj', () => {
 		// TODO: add test case of other type
 	});
 
-	test('test recursive call deepCopy', () => {
-		const obj = {
-			a: 1,
-			b: {
-				c: 3,
-				d: 6,
-			},
-		};
+	test('test copying array', () => {
+		const arr = [1, 2, 3];
+		expect(deepCopy(arr)).toEqual(arr);
+		expect(deepCopy(arr)).not.toBe(arr);
+	});
+});
 
+describe('test except case', () => {
+	const obj = {
+		a: null,
+		b: undefined,
+	};
+
+	test('test null, undefined case', () => {
 		expect(deepCopy(obj)).toEqual(obj);
+		expect(deepCopy(obj)).not.toBe(obj);
 	});
 });
