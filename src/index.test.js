@@ -1,5 +1,7 @@
-const { copyObj, copyMap, copySet, deepCopy, copy } = require('.');
-const { TYPE, key } = require('./utils/constants');
+const { deepCopy } = require('.');
+const func = require('./utils/copyFunctions');
+const { copy } = require('./utils/copyType');
+const { TYPE, wrapKey } = require('./utils/constants');
 
 describe('test copying object', () => {
 	test('copy primitive value in object', () => {
@@ -7,8 +9,8 @@ describe('test copying object', () => {
 			a: 1,
 		};
 
-		expect(copyObj(obj)).not.toBe(obj);
-		expect(copyObj(obj)).toEqual(obj);
+		expect(func.copyObj(obj)).not.toBe(obj);
+		expect(func.copyObj(obj)).toEqual(obj);
 	});
 
 	test('copy object value in object', () => {
@@ -18,8 +20,8 @@ describe('test copying object', () => {
 			},
 		};
 
-		expect(copyObj(obj)).toEqual(obj);
-		expect(copyObj(obj)).not.toBe(obj);
+		expect(func.copyObj(obj)).toEqual(obj);
+		expect(func.copyObj(obj)).not.toBe(obj);
 	});
 });
 
@@ -28,8 +30,8 @@ describe('test copying map object', () => {
 		const mapObj = new Map();
 		mapObj.set('a', 1);
 
-		expect(copyMap(mapObj)).not.toBe(mapObj);
-		expect(copyMap(mapObj)).toEqual(mapObj);
+		expect(func.copyMap(mapObj)).not.toBe(mapObj);
+		expect(func.copyMap(mapObj)).toEqual(mapObj);
 	});
 
 	test('copy object value in map object', () => {
@@ -39,8 +41,8 @@ describe('test copying map object', () => {
 			['C', { value: 'valueC' }],
 		]);
 
-		expect(copyMap(mapObj)).not.toBe(mapObj);
-		expect(copyMap(mapObj)).toEqual(mapObj);
+		expect(func.copyMap(mapObj)).not.toBe(mapObj);
+		expect(func.copyMap(mapObj)).toEqual(mapObj);
 	});
 
 	test('copy map object value in map object', () => {
@@ -61,15 +63,15 @@ describe('test copying set object', () => {
 	test('copy primitive value in set object', () => {
 		setObj.add(1);
 		setObj.add(5);
-		expect(copySet(setObj)).not.toBe(setObj);
-		expect(copySet(setObj)).toEqual(setObj);
+		expect(func.copySet(setObj)).not.toBe(setObj);
+		expect(func.copySet(setObj)).toEqual(setObj);
 	});
 
 	test('copy object value in set object', () => {
 		setObj.add({ a: 1, b: 2 });
 
-		expect(copySet(setObj)).not.toBe(setObj);
-		expect(copySet(setObj)).toEqual(setObj);
+		expect(func.copySet(setObj)).not.toBe(setObj);
+		expect(func.copySet(setObj)).toEqual(setObj);
 	});
 
 	test('copy set value in set object', () => {
@@ -132,11 +134,11 @@ describe('test obj', () => {
 
 	test('get object property with Object.prototype', () => {
 		const typeOfMap = Object.prototype.toString.call(mapObject);
-		expect(typeOfMap).toBe(key(TYPE.MAP));
+		expect(typeOfMap).toBe(wrapKey(TYPE.MAP));
 		expect(copy[typeOfMap](mapObject)).toEqual(mapObject);
 
 		const typeOfObject = Object.prototype.toString.call(obj);
-		expect(typeOfObject).toBe(key(TYPE.OBJECT));
+		expect(typeOfObject).toBe(wrapKey(TYPE.OBJECT));
 		expect(copy[typeOfObject](obj)).toEqual(obj);
 
 		// TODO: add test case of other type
