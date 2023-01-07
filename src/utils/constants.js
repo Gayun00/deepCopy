@@ -8,6 +8,11 @@ export const TYPE = {
 	UNDEFINED: 'Undefined',
 };
 
+export const ITERATE_TYPE = {
+	FOR_IN: 'FOR_IN',
+	FOR_OF: 'FOR_OF',
+};
+
 export const handleType = (obj) => {
 	const objType = Object.prototype.toString.call(obj);
 	return copy[objType](obj);

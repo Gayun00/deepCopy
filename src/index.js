@@ -1,4 +1,4 @@
-import { key, TYPE } from './utils/constants';
+import { key, TYPE, ITERATE_TYPE } from './utils/constants';
 
 export const deepCopy = (obj) => {
 	let objType = '';
@@ -41,36 +41,37 @@ export const copyPrimitive = (value) => {
 
 export const copyArray = (array) => {
 	const res = [];
-	iterateObj2(array, (key, value) => (res[key] = value));
+	iterate[ITERATE_TYPE.FOR_IN](array, (key, value) => (res[key] = value));
 	return res;
 };
 
 export const copyObj = (origin) => {
 	let res = {};
-	iterateObj2(origin, (key, value) => (res[key] = value));
+	iterate[ITERATE_TYPE.FOR_IN](origin, (key, value) => (res[key] = value));
 	return res;
 };
 
 export const copyMap = (origin) => {
 	const res = new Map();
-	iterateObj(origin, (key, value) => res.set(key, value));
+	iterate[ITERATE_TYPE.FOR_OF](origin, (key, value) => res.set(key, value));
 	return res;
 };
 
 export const copySet = (origin) => {
 	const res = new Set();
-	iterateObj(origin.entries(), (value) => res.add(value));
+	iterate[ITERATE_TYPE.FOR_OF](origin.entries(), (value) => res.add(value));
 	return res;
 };
 
-const iterateObj = (obj, setValueFunc) => {
-	for (let [key, value] of obj) {
-		setValueFunc(key, deepCopy(value));
-	}
-};
-
-const iterateObj2 = (obj, setValueFunc) => {
-	for (let key in obj) {
-		setValueFunc(key, deepCopy(obj[key]));
-	}
+const iterate = {
+	[ITERATE_TYPE.FOR_IN](obj, setValueFunc) {
+		for (let key in obj) {
+			setValueFunc(key, deepCopy(obj[key]));
+		}
+	},
+	[ITERATE_TYPE.FOR_OF](obj, setValueFunc) {
+		for (let [key, value] of obj) {
+			setValueFunc(key, deepCopy(value));
+		}
+	},
 };
