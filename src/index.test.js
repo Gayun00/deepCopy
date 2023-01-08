@@ -1,4 +1,7 @@
-const { copyObj, copyMap, copySet, deepCopy } = require('.');
+const { deepCopy } = require('.');
+const func = require('./utils/copyFunctions');
+const { copy } = require('./utils/copyType');
+const { TYPE, wrapKey } = require('./utils/constants');
 
 describe('test copying object', () => {
 	test('copy primitive value in object', () => {
@@ -6,8 +9,8 @@ describe('test copying object', () => {
 			a: 1,
 		};
 
-		expect(copyObj(obj)).not.toBe(obj);
-		expect(copyObj(obj)).toEqual(obj);
+		expect(func.copyObj(obj)).not.toBe(obj);
+		expect(func.copyObj(obj)).toEqual(obj);
 	});
 
 	test('copy object value in object', () => {
@@ -17,8 +20,8 @@ describe('test copying object', () => {
 			},
 		};
 
-		expect(copyObj(obj)).toEqual(obj);
-		expect(copyObj(obj)).not.toBe(obj);
+		expect(func.copyObj(obj)).toEqual(obj);
+		expect(func.copyObj(obj)).not.toBe(obj);
 	});
 });
 
@@ -27,8 +30,8 @@ describe('test copying map object', () => {
 		const mapObj = new Map();
 		mapObj.set('a', 1);
 
-		expect(copyMap(mapObj)).not.toBe(mapObj);
-		expect(copyMap(mapObj)).toEqual(mapObj);
+		expect(func.copyMap(mapObj)).not.toBe(mapObj);
+		expect(func.copyMap(mapObj)).toEqual(mapObj);
 	});
 
 	test('copy object value in map object', () => {
@@ -38,8 +41,19 @@ describe('test copying map object', () => {
 			['C', { value: 'valueC' }],
 		]);
 
-		expect(copyMap(mapObj)).not.toBe(mapObj);
-		expect(copyMap(mapObj)).toEqual(mapObj);
+		expect(func.copyMap(mapObj)).not.toBe(mapObj);
+		expect(func.copyMap(mapObj)).toEqual(mapObj);
+	});
+
+	test('copy map object value in map object', () => {
+		const map = new Map();
+		map.set('a', 1);
+		const map2 = new Map();
+		map2.set('b', 2);
+		map.set('c', map2);
+
+		expect(deepCopy(map)).toEqual(map);
+		expect(deepCopy(map)).not.toBe(map);
 	});
 });
 
@@ -49,15 +63,23 @@ describe('test copying set object', () => {
 	test('copy primitive value in set object', () => {
 		setObj.add(1);
 		setObj.add(5);
-		expect(copySet(setObj)).not.toBe(setObj);
-		expect(copySet(setObj)).toEqual(setObj);
+		expect(func.copySet(setObj)).not.toBe(setObj);
+		expect(func.copySet(setObj)).toEqual(setObj);
 	});
 
 	test('copy object value in set object', () => {
 		setObj.add({ a: 1, b: 2 });
 
-		expect(copySet(setObj)).not.toBe(setObj);
-		expect(copySet(setObj)).toEqual(setObj);
+		expect(func.copySet(setObj)).not.toBe(setObj);
+		expect(func.copySet(setObj)).toEqual(setObj);
+	});
+
+	test('copy set value in set object', () => {
+		const set2 = new Set();
+		set2.add(5);
+		setObj.add(set2);
+		expect(deepCopy(set2)).toEqual(set2);
+		expect(deepCopy(set2)).not.toBe(set2);
 	});
 });
 
@@ -87,12 +109,62 @@ describe('test deepCopy()', () => {
 		expect(deepCopy(mapObj)).toEqual(mapObj);
 	});
 
-	test('throw an error if the parameter is primitive', () => {
-		expect(() => deepCopy(4)).toThrow('unsupported type');
-		expect(() => deepCopy('string')).toThrow('unsupported type');
+	test('copy primitive type value', () => {
+		expect(deepCopy(4)).toBe(4);
+		expect(deepCopy('string')).toBe('string');
+	});
+});
+
+describe('test obj', () => {
+	const obj = {
+		A: 'valueA',
+	};
+
+	const mapObject = new Map([
+		['A', { value: 'valueA' }],
+		['B', { value: 'valueB' }],
+		['C', { value: 'valueC' }],
+		['D', 'valueD'],
+	]);
+
+	const setObj = new Set();
+	setObj.add(1);
+	setObj.add(5);
+	setObj.add({ a: 1, b: 2 });
+
+	test('get object property with Object.prototype', () => {
+		const typeOfMap = Object.prototype.toString.call(mapObject);
+		expect(typeOfMap).toBe(wrapKey(TYPE.MAP));
+		expect(copy[typeOfMap](mapObject)).toEqual(mapObject);
+
+		const typeOfObject = Object.prototype.toString.call(obj);
+		expect(typeOfObject).toBe(wrapKey(TYPE.OBJECT));
+		expect(copy[typeOfObject](obj)).toEqual(obj);
+
+		// TODO: add test case of other type
 	});
 
-	test('throw an error if the parameter type is array', () => {
-		expect(() => deepCopy([1, 2, 3])).toThrow('unsupported type');
+	test('test copying array', () => {
+		const arr = [1, 2, 3];
+		expect(deepCopy(arr)).toEqual(arr);
+		expect(deepCopy(arr)).not.toBe(arr);
+	});
+
+	test('test copying symbol', () => {
+		const symbol = Symbol('foo');
+		expect(deepCopy(symbol)).toEqual(symbol);
+		expect(deepCopy(symbol)).not.toBe(symbol);
+	});
+});
+
+describe('test except case', () => {
+	const obj = {
+		a: null,
+		b: undefined,
+	};
+
+	test('test null, undefined case', () => {
+		expect(deepCopy(obj)).toEqual(obj);
+		expect(deepCopy(obj)).not.toBe(obj);
 	});
 });
