@@ -29,3 +29,10 @@ export const copySet = (origin) => {
 	recurse[ITERATE_TYPE.FOR_OF](origin.entries(), (value) => res.add(value));
 	return res;
 };
+
+export const copySymbol = (origin) => {
+	const res = new Symbol('res');
+	const key = Symbol.keyFor(origin);
+	res = Symbol.for(key);
+	return res;
+};

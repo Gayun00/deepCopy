@@ -149,6 +149,12 @@ describe('test obj', () => {
 		expect(deepCopy(arr)).toEqual(arr);
 		expect(deepCopy(arr)).not.toBe(arr);
 	});
+
+	test('test copying symbol', () => {
+		const symbol = Symbol('foo');
+		expect(deepCopy(symbol)).toEqual(symbol);
+		expect(deepCopy(symbol)).not.toBe(symbol);
+	});
 });
 
 describe('test except case', () => {

@@ -14,6 +14,9 @@ export const copy = {
 	[wrapKey(TYPE.ARRAY)](arr) {
 		return func.copyArray(arr);
 	},
+	[wrapKey(TYPE.SYMBOL)](val) {
+		return func.copySymbol(val);
+	},
 	[wrapKey(TYPE.NULL)]() {
 		return null;
 	},

@@ -3,6 +3,7 @@ export const TYPE = {
 	SET: 'Set',
 	OBJECT: 'Object',
 	ARRAY: 'Array',
+	SYMBOL: 'Symbol',
 	PRIMITIVE: 'Primitive',
 	NULL: 'Null',
 	UNDEFINED: 'Undefined',
